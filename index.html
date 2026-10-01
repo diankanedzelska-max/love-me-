@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Love Me Valentine 💕</title>
+  <meta name="description" content="A cute Valentine's Day page asking Do you love me?" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ffe0ec 0%, #ffc2d4 40%, #ffb3c6 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Nunito', sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Floating hearts background */
+    .bg-hearts {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-heart {
+      position: absolute;
+      font-size: 1.5rem;
+      animation: floatUp linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes floatUp {
+      0%   { transform: translateY(110vh) scale(0.5) rotate(0deg); opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.4; }
+      100% { transform: translateY(-10vh) scale(1.2) rotate(20deg); opacity: 0; }
+    }
+
+    /* Card */
+    #question-container {
+      position: relative;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 32px;
+      padding: 48px 56px 44px;
+      box-shadow:
+        0 8px 40px rgba(255, 100, 130, 0.25),
+        0 2px 8px rgba(255, 100, 130, 0.1),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+      text-align: center;
+      max-width: 440px;
+      width: 90vw;
+      transition: transform 0.3s ease;
+    }
+
+    #question-container:hover {
+      transform: translateY(-4px);
+    }
+
+    .bear-image {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      border-radius: 16px;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 4px 12px rgba(255,100,130,0.2));
+      animation: gentleBob 3s ease-in-out infinite;
+    }
+
+    @keyframes gentleBob {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-8px); }
+    }
+
+    .question-text {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #c0214e;
+      margin: 16px 0 28px;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 4px rgba(192, 33, 78, 0.15);
+    }
+
+    .buttons-area {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      min-height: 60px;
+    }
+
+    .btn {
+      padding: 14px 36px;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      outline: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.2);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover::after {
+      opacity: 1;
+    }
+
+    #yes-btn {
+      background: linear-gradient(135deg, #ff6b8a, #e0245e);
+      color: white;
+      box-shadow: 0 4px 20px rgba(224, 36, 94, 0.45);
+      font-size: 1.15rem;
+    }
+
+    #yes-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 28px rgba(224, 36, 94, 0.6);
+    }
+
+    #yes-btn:active {
+      transform: scale(0.97);
+    }
+
+    #no-btn {
+      background: linear-gradient(135deg, #ffb3c6, #ff6b8a);
+      color: white;
+      position: fixed;
+      transition: none;
+      z-index: 100;
+    }
+
+    /* Result screen */
+    #result-container {
+      display: none;
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes popIn {
+      0%   { transform: scale(0.5) rotate(-5deg); opacity: 0; }
+      70%  { transform: scale(1.05) rotate(2deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    .result-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      border-radius: 32px;
+      padding: 48px 56px;
+      box-shadow:
+        0 8px 40px rgba(255, 100, 130, 0.3),
+        inset 0 1px 0 rgba(255,255,255,0.9);
+      max-width: 420px;
+      width: 90vw;
+    }
+
+    .result-image {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      border-radius: 16px;
+      margin-bottom: 16px;
+      animation: gentleBob 2.5s ease-in-out infinite;
+    }
+
+    .result-text {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #c0214e;
+      margin-bottom: 8px;
+    }
+
+    .result-sub {
+      font-size: 1rem;
+      color: #e0567a;
+      font-weight: 600;
+    }
+
+    /* Burst hearts on yes */
+    .burst-heart {
+      position: fixed;
+      font-size: 2rem;
+      pointer-events: none;
+      z-index: 999;
+      animation: burstOut 1s ease-out forwards;
+    }
+
+    @keyframes burstOut {
+      0%   { transform: translate(0,0) scale(0.3); opacity: 1; }
+      100% { transform: translate(var(--dx), var(--dy)) scale(1.4); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating background hearts -->
+  <div class="bg-hearts" id="bg-hearts"></div>
+
+  <!-- Question Card -->
+  <div id="question-container">
+    <img
+      class="bear-image"
+      src="cute_bears.jpg"
+      alt="Cute bears"
+    />
+    <p class="question-text">Do you love me? 🐻</p>
+    <div class="buttons-area">
+      <button class="btn" id="yes-btn">Yes 💗</button>
+    </div>
+  </div>
+
+  <button class="btn" id="no-btn">No 🙅</button>
+
+  <!-- Result Card -->
+  <div id="result-container">
+    <div class="result-card">
+      <img
+        class="result-image"
+        src="happy_bears_hug.jpg"
+        alt="Happy hugging bears"
+      />
+      <p class="result-text">Yay! I knew it! 🎉</p>
+      <p class="result-sub">We are meant to be together forever 💕</p>
+    </div>
+  </div>
+
+  <script>
+    // ── Background floating hearts ──────────────────────────────────────────
+    const bgHeartsEl = document.getElementById('bg-hearts');
+    const heartEmojis = ['💕','💗','💖','💝','🩷','❤️','💞'];
+
+    for (let i = 0; i < 22; i++) {
+      const h = document.createElement('span');
+      h.className = 'bg-heart';
+      h.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+      h.style.left = Math.random() * 100 + 'vw';
+      h.style.fontSize = (1 + Math.random() * 1.5) + 'rem';
+      const dur = 6 + Math.random() * 8;
+      h.style.animationDuration = dur + 's';
+      h.style.animationDelay = (-Math.random() * dur) + 's';
+      bgHeartsEl.appendChild(h);
+    }
+
+    // ── Elements ────────────────────────────────────────────────────────────
+    const questionContainer = document.getElementById('question-container');
+    const noBtn             = document.getElementById('no-btn');
+    const yesBtn            = document.getElementById('yes-btn');
+    const resultContainer   = document.getElementById('result-container');
+
+    // Position No button initially near the question card center
+    function positionNoBtnInitial() {
+      const rect = questionContainer.getBoundingClientRect();
+      noBtn.style.left = (rect.left + rect.width / 2 + 20) + 'px';
+      noBtn.style.top  = (rect.top  + rect.height - 64) + 'px';
+    }
+    positionNoBtnInitial();
+    window.addEventListener('resize', positionNoBtnInitial);
+
+    // ── No button runs away ─────────────────────────────────────────────────
+    let noClickCount = 0;
+
+    function moveNoBtn() {
+      const btnW = noBtn.offsetWidth  + 20;
+      const btnH = noBtn.offsetHeight + 20;
+      const maxX = window.innerWidth  - btnW;
+      const maxY = window.innerHeight - btnH;
+
+      noBtn.style.left = Math.floor(Math.random() * maxX) + 'px';
+      noBtn.style.top  = Math.floor(Math.random() * maxY) + 'px';
+
+      // Grow the Yes button slightly each time No escapes (up to 5 times)
+      noClickCount++;
+      if (noClickCount <= 5) {
+        yesBtn.style.fontSize = (1.15 + noClickCount * 0.1) + 'rem';
+        yesBtn.style.padding  = `${14 + noClickCount * 2}px ${36 + noClickCount * 4}px`;
+        yesBtn.style.boxShadow = `0 6px ${28 + noClickCount * 4}px rgba(224,36,94,${0.5 + noClickCount * 0.05})`;
+      }
+    }
+
+    noBtn.addEventListener('mouseover', moveNoBtn);
+    noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveNoBtn(); });
+
+    // ── Yes button clicked → heart burst + show result ─────────────────────
+    function burstHearts() {
+      const cx = window.innerWidth  / 2;
+      const cy = window.innerHeight / 2;
+      for (let i = 0; i < 28; i++) {
+        const el = document.createElement('span');
+        el.className = 'burst-heart';
+        el.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+        const angle = Math.random() * 2 * Math.PI;
+        const dist  = 80 + Math.random() * 240;
+        el.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+        el.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+        el.style.left = cx + 'px';
+        el.style.top  = cy + 'px';
+        el.style.animationDelay = (Math.random() * 0.3) + 's';
+        document.body.appendChild(el);
+        el.addEventListener('animationend', () => el.remove());
+      }
+    }
+
+    yesBtn.addEventListener('click', () => {
+      burstHearts();
+      questionContainer.style.transition = 'all 0.5s ease';
+      questionContainer.style.opacity    = '0';
+      questionContainer.style.transform  = 'scale(0.8)';
+      noBtn.style.display = 'none';
+
+      setTimeout(() => {
+        questionContainer.style.display = 'none';
+        resultContainer.style.display   = 'block';
+        burstHearts();
+      }, 500);
+    });
+  </script>
+</body>
+</html>
